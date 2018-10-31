@@ -3,9 +3,9 @@
  * The easiest solution for disabling Google Chrome auto-fill, auto-complete functions.
  *
  * @license MIT
- * @version 1.2.4
+ * @version 1.2.5
  * @author  Terry, https://github.com/terrylinooo/
- * @updated 2018-08-01
+ * @updated 2018-10-31
  * @link    https://github.com/terrylinooo/jquery.disableAutoFill
  */
 
@@ -66,7 +66,7 @@
                 console.log(realPassword);
             }
         });
-    }
+    };
 
     /**
      * Helper function - formSubmitListener
@@ -77,13 +77,13 @@
      */
     _helper.formSubmitListener = function(obj, settings) {
         var btnObj = (settings.submitButton == '') ? '.disableAutoFillSubmit' : settings.submitButton;
-
+        
         obj.on('click', btnObj, function(event) {
             _helper.restoreInput(obj, settings);
-
-            if (settings.callback.call()) {
+            
+            if (settings.onSubmit.call()) {
                 if (settings.debugMode) {
-                    console.log(obj.serialize())
+                    console.log(obj.serialize());
                 } else {
                     // Native HTML form validation requires "type=submit" to work with.
                     if (settings.html5FormValidate) {
@@ -111,7 +111,10 @@
     _helper.randomizeInput = function(obj, settings) {
         obj.find('input').each(function(i) {
             realFields[i] = $(this).attr('name');
-            $(this).attr('name', Math.random().toString(36).replace(/[^a-z]+/g, ''));
+            if(settings.onInit($(this))) {
+                $(this).attr('name', Math.random().toString(36).replace(/[^a-z]+/g, ''));
+                $(this).data('randomized', true)
+            }
         });
     };
 
@@ -126,7 +129,9 @@
     _helper.restoreInput = function(obj, settings) {
         if (settings.randomizeInputName) {
             obj.find('input').each(function(i) {
-                $(this).attr('name', realFields[i]);
+                if($(this).data('randomized')) {
+                    $(this).attr('name', realFields[i]);
+                }
             });
         }
         if (settings.textToPassword) {
@@ -164,7 +169,9 @@
         _helper.formSubmitListener(this, settings);
         
     };
-
+    
+    // REMOVE: TODO: Remove 'callback' on major version change. Currently v1.2.5
+    // Replaced by onSubmit
     $.fn.disableAutoFill.defaults = {
         debugMode: false,
         textToPassword: true,
@@ -173,8 +180,13 @@
         html5FormValidate: false,
         submitButton: '',
         callback: function() {
+            console.warn("Deprecated; Use onClick");
             return true;
         },
+        onSubmit: function(){
+            return $.fn.disableAutoFill.defaults.callback.call()
+        },
+        onInit: function(el){ return true }
     };
 
 })(jQuery);
