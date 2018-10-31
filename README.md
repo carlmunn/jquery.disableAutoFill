@@ -1,6 +1,6 @@
 # jquery.disableAutoFill (Forked)
 
-Solution to disabling Google Chrome auto-fill, auto-complete functions. This works by input element's name attribute. On form submission it will change it back
+Solution to disabling Google Chrome auto-fill, auto-complete functions. This works by changing 'input' element's name attribute. On form submission it will change it back
 
 Document Transations: [English](./README.md) | [繁體中文](./README_zh_TW.md) | [简体中文](./README_zh_CN.md)
 
@@ -72,9 +72,9 @@ $('#login-form').disableAutoFill({
     onSubmit: function() {
         return checkForm();
     },
-	onInit: function($el){
-		return $el.hasClass("-allow")
-	}
+    onInit: function($el){
+        return $el.hasClass("-allow")
+    }
 });
 
 function checkForm() {

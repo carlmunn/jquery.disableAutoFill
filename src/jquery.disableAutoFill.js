@@ -180,7 +180,7 @@
         html5FormValidate: false,
         submitButton: '',
         callback: function() {
-            console.warn("Deprecated; Use onClick");
+            console.warn("Deprecated - Use onSubmit");
             return true;
         },
         onSubmit: function(){
